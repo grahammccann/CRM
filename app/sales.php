@@ -195,7 +195,7 @@ function editSale(id) {
     }
 }
 </script>
-
+ 
 <?php
 include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-footer.php");
 ob_end_flush();
