@@ -6,6 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-header.php");
 $user_id = $_SESSION['user_id'];
 $sales = DB::getInstance()->select("SELECT * FROM sales WHERE user_id = :user_id", ['user_id' => $user_id]);
 
+// Fetch contacts for the dropdown
+$contacts = DB::getInstance()->select("SELECT id, name FROM contacts WHERE user_id = :user_id", ['user_id' => $user_id]);
+
 $sale_to_edit = null;
 if (isset($_GET['edit_id'])) {
     $sale_to_edit = DB::getInstance()->selectOne("SELECT * FROM sales WHERE id = :id AND user_id = :user_id", ['id' => $_GET['edit_id'], 'user_id' => $user_id]);
@@ -86,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="card mt-3">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h3>Sales</h3>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal" style="position: absolute; right: 20px;"><i class="bi bi-person-plus"></i> Add Sale</button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal" style="position: absolute; right: 20px;"><i class="bi bi-plus-lg"></i> Add Sale</button>
                         </div>
                         <div class="card-body">
                             <table class="table table-striped">
