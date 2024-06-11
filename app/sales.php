@@ -1,64 +1,144 @@
 <?php
+ob_start(); // Ensure no output before headers are modified
 include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-header.php");
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: /login.php');
-    exit;
-}
-
+// Fetch sales for the logged-in user
 $user_id = $_SESSION['user_id'];
 $sales = DB::getInstance()->select("SELECT * FROM sales WHERE user_id = :user_id", ['user_id' => $user_id]);
 
-// Handle form submissions for add, edit, and delete
+$sale_to_edit = null;
+if (isset($_GET['edit_id'])) {
+    $sale_to_edit = DB::getInstance()->selectOne("SELECT * FROM sales WHERE id = :id AND user_id = :user_id", ['id' => $_GET['edit_id'], 'user_id' => $user_id]);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    $id = $_POST['id'] ?? 0;
+
+    if ($action === 'delete' && $id) {
+        $delete_status = DB::getInstance()->delete('sales', 'id', $id);
+        if ($delete_status) {
+            $_SESSION['success'] = "Sale deleted successfully.";
+        } else {
+            $_SESSION['error'] = "Failed to delete sale.";
+        }
+        header('Location: sales.php');
+        exit;
+    } elseif ($action === 'add' || $action === 'edit') {
+        $deal_name = trim($_POST['deal_name']);
+        $contact_id = trim($_POST['contact_id']);
+        $deal_value = trim($_POST['deal_value']);
+        $deal_stage = trim($_POST['deal_stage']);
+        $close_date = trim($_POST['close_date']);
+        $notes = trim($_POST['notes']);
+
+        $fields = [
+            'user_id' => $user_id,
+            'deal_name' => $deal_name,
+            'contact_id' => $contact_id,
+            'deal_value' => $deal_value,
+            'deal_stage' => $deal_stage,
+            'close_date' => $close_date,
+            'notes' => $notes,
+        ];
+
+        if ($action === 'add') {
+            $insert_status = DB::getInstance()->insert('sales', $fields);
+            if ($insert_status) {
+                $_SESSION['success'] = "Sale added successfully.";
+            } else {
+                $_SESSION['error'] = "Failed to add sale.";
+            }
+        } elseif ($action === 'edit' && $id) {
+            $update_status = DB::getInstance()->update('sales', 'id', $id, $fields);
+            if ($update_status) {
+                $_SESSION['success'] = "Sale updated successfully.";
+            } else {
+                $_SESSION['error'] = "Failed to update sale.";
+            }
+        }
+        header('Location: sales.php');
+        exit;
+    }
+}
 ?>
 
-<div class="container">
-    <h2>Sales Pipeline</h2>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal">Add Sale</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Deal Name</th>
-                <th>Contact</th>
-                <th>Value</th>
-                <th>Stage</th>
-                <th>Close Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($sales as $sale): ?>
-                <tr>
-                    <td><?= htmlspecialchars($sale['deal_name']); ?></td>
-                    <td><?= htmlspecialchars($sale['contact_id']); ?></td>
-                    <td><?= htmlspecialchars($sale['deal_value']); ?></td>
-                    <td><?= htmlspecialchars($sale['deal_stage']); ?></td>
-                    <td><?= htmlspecialchars($sale['close_date']); ?></td>
-                    <td>
-                        <button class="btn btn-sm btn-warning" onclick="editSale(<?= $sale['id']; ?>)">Edit</button>
-                        <form method="POST" style="display:inline-block;">
-                            <input type="hidden" name="id" value="<?= $sale['id']; ?>">
-                            <input type="hidden" name="action" value="delete">
-                            <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Display success or error messages -->
+            <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle"></i> <?= $_SESSION['success'] ?>
+                <?php unset($_SESSION['success']); ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i> <?= $_SESSION['error'] ?>
+                <?php unset($_SESSION['error']); ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mt-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3>Sales</h3>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal" style="position: absolute; right: 20px;"><i class="bi bi-person-plus"></i> Add Sale</button>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Deal Name</th>
+                                        <th>Contact</th>
+                                        <th>Value</th>
+                                        <th>Stage</th>
+                                        <th>Close Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($sales as $sale): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($sale['deal_name']); ?></td>
+                                        <td><?= htmlspecialchars($sale['contact_id']); ?></td>
+                                        <td><?= htmlspecialchars($sale['deal_value']); ?></td>
+                                        <td><?= htmlspecialchars($sale['deal_stage']); ?></td>
+                                        <td><?= htmlspecialchars($sale['close_date']); ?></td>
+                                        <td>
+                                            <button onclick="editSale(<?= $sale['id']; ?>)" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Edit</button>
+                                            <form action="sales.php" method="post" style="display:inline-block;">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="<?= $sale['id']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<!-- Modal for adding/editing sales -->
+<!-- Add/Edit Sale Modal -->
 <div class="modal fade" id="addEditSaleModal" tabindex="-1" aria-labelledby="addEditSaleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addEditSaleModalLabel">Add Sale</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEditSaleModalLabel">Add/Edit Sale</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addEditSaleForm" action="sales.php" method="post">
                 <div class="modal-body">
-                    <input type="hidden" name="action" value="add" id="saleAction">
+                    <input type="hidden" name="action" id="saleAction" value="add">
                     <input type="hidden" name="id" id="saleId">
                     <div class="mb-3">
                         <label for="deal_name" class="form-label">Deal Name</label>
@@ -118,4 +198,5 @@ function editSale(id) {
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-footer.php");
+ob_end_flush();
 ?>
