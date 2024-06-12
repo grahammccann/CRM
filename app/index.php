@@ -1,6 +1,8 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-header.php");
+?>
 
+<?php
     // Fetch user's subscription plan
     $user_id = $_SESSION['user_id'];
     $subscription = DB::getInstance()->selectOne("SELECT plan_id FROM subscriptions WHERE user_id = :user_id AND status = 'active'", ['user_id' => $user_id]);
@@ -49,7 +51,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-secondary text-white">
-                        <h4>What You Can Do</h4>
+                        <h4>Quick Links</h4>
                     </div>
                     <div class="card-body">
                         <ul>

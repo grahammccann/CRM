@@ -11,7 +11,7 @@
                     <li class="mb-2"><a href="<?= fullUrl(); ?>" class="text-dark text-decoration-none">Home</a></li>
                     <li class="mb-2"><a href="features.php" class="text-dark text-decoration-none">Features</a></li>
                     <li class="mb-2"><a href="pricing.php" class="text-dark text-decoration-none">Pricing</a></li>
-                    <li class="mb-2"><a href="about.php" class="text-dark text-decoration-none">About Us</a></li>
+                    <li class="mb-2"><a href="about.php" class="text-dark text-decoration-none">About</a></li>
                     <li class="mb-2"><a href="contact.php" class="text-dark text-decoration-none">Contact</a></li>
                 </ul>
             </div>

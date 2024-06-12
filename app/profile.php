@@ -1,6 +1,9 @@
 <?php
-ob_start();
-include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-header.php");
+	ob_start();
+	include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-header.php");
+?>
+
+<?php
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
@@ -57,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
 ?>
 
 <div class="content-wrapper">

@@ -32,7 +32,7 @@ $metadata = getPageMetadata($page);
                         <li class="nav-item"><a class="nav-link" href="<?= fullUrl(); ?>"><i class="fas fa-home"></i> Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="features.php"><i class="fas fa-cogs"></i> Features</a></li>
                         <li class="nav-item"><a class="nav-link" href="pricing.php"><i class="fas fa-dollar-sign"></i> Pricing</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a></li>
                         <li class="nav-item"><a class="nav-link" href="contact.php"><i class="fas fa-envelope"></i> Contact</a></li>
                         <li class="nav-item"><a class="nav-link" href="support.php"><i class="fas fa-life-ring"></i> Support</a></li>
                         <li class="nav-item"><a class="nav-link nav-link-login ms-2" href="login.php"><i class="fas fa-sign-in-alt"></i> Login</a></li>

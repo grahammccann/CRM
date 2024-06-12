@@ -18,7 +18,7 @@ $current_page = basename($_SERVER['PHP_SELF'], ".php");
 $page_titles = [
     'index' => 'Dashboard',
     'profile' => 'Profile',
-    'contacts' => 'Contacts',
+    'customers' => 'Customers',
     'sales' => 'Sales',
     'admin-users' => 'Manage Users',
     'admin-settings' => 'Settings',
@@ -59,8 +59,6 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
                                 <li><a class="dropdown-item" href="admin-users.php">Manage Users</a></li>
-                                <li><a class="dropdown-item" href="admin-settings.php">Settings</a></li>
-                                <li><a class="dropdown-item" href="admin-reports.php">Reports</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>
@@ -100,16 +98,11 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                                 <p>Dashboard</p>
                             </a>
                         </li>
+						<li class="nav-header">CRM</li>
                         <li class="nav-item">
-                            <a href="profile.php" class="nav-link <?php echo $current_page === 'profile' ? 'active' : ''; ?>">
-                                <i class="nav-icon bi bi-person"></i>
-                                <p>Profile</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="contacts.php" class="nav-link <?php echo $current_page === 'contacts' ? 'active' : ''; ?>">
+                            <a href="customers.php" class="nav-link <?php echo $current_page === 'customers' ? 'active' : ''; ?>">
                                 <i class="nav-icon bi bi-person-lines-fill"></i>
-                                <p>Contacts</p>
+                                <p>Customers</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -118,8 +111,7 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                                 <p>Sales</p>
                             </a>
                         </li>
-                        <!-- Additional nav items here -->
-                    </ul>
+					</ul>
                 </nav>
             </div>
         </aside>
@@ -128,5 +120,5 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0"><?= $page_title; ?></h3>
+                            <h3 class="mb-0" style="padding-bottom: 10px;"><?= $page_title; ?></h3>
                         </div>
