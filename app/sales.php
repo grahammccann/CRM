@@ -72,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Display success or error messages -->
             <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success">
-                <i class="bi bi-check-circle"></i> <?= $_SESSION['success'] ?>
+                <i class="bi bi-check-circle"></i> <?= htmlspecialchars($_SESSION['success']) ?>
                 <?php unset($_SESSION['success']); ?>
             </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger">
-                <i class="bi bi-exclamation-circle"></i> <?= $_SESSION['error'] ?>
+                <i class="bi bi-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error']) ?>
                 <?php unset($_SESSION['error']); ?>
             </div>
             <?php endif; ?>
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal" style="position: absolute; right: 20px;"><i class="bi bi-plus-lg"></i> Add Sale</button>
                         </div>
                         <div class="card-body">
-                            <table class="table table-striped">
+                            <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>Deal Name</th>
@@ -112,11 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <td><?= htmlspecialchars($sale['deal_stage']); ?></td>
                                         <td><?= htmlspecialchars($sale['close_date']); ?></td>
                                         <td>
-                                            <button onclick="editSale(<?= $sale['id']; ?>)" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Edit</button>
+                                            <button onclick="editSale(<?= $sale['id']; ?>)" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Edit Sale"><i class="bi bi-pencil"></i> Edit</button>
                                             <form action="sales.php" method="post" style="display:inline-block;">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="id" value="<?= $sale['id']; ?>">
-                                                <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                                                <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete Sale"><i class="bi bi-trash"></i> Delete</button>
                                             </form>
                                         </td>
                                     </tr>

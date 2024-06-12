@@ -71,14 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Display success or error messages -->
             <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success">
-                <i class="bi bi-check-circle"></i> <?= $_SESSION['success'] ?>
+                <i class="bi bi-check-circle"></i> <?= htmlspecialchars($_SESSION['success']) ?>
                 <?php unset($_SESSION['success']); ?>
             </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger">
-                <i class="bi bi-exclamation-circle"></i> <?= $_SESSION['error'] ?>
+                <i class="bi bi-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error']) ?>
                 <?php unset($_SESSION['error']); ?>
             </div>
             <?php endif; ?>
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditCustomerModal" style="position: absolute; right: 20px;"><i class="bi bi-person-plus"></i> Add Customer</button>
                         </div>
                         <div class="card-body">
-                            <table class="table table-striped">
+                            <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>#</th>

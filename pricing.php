@@ -46,7 +46,7 @@
                         <li><i class="fas fa-check text-success"></i> Analytics & Reports</li>
                     </ul>
                     <div class="mt-auto">
-                        <a href="" class="btn btn-success">
+                        <a href="#" class="btn btn-success">
                             <i class="fas fa-user-plus"></i> Sign Up
                         </a>
                     </div>
@@ -67,7 +67,7 @@
                         <li><i class="fas fa-check text-success"></i> Priority Support</li>
                     </ul>
                     <div class="mt-auto">
-                        <a href="" class="btn btn-warning">
+                        <a href="#" class="btn btn-warning">
                             <i class="fas fa-user-plus"></i> Sign Up
                         </a>
                     </div>

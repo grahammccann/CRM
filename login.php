@@ -1,10 +1,14 @@
 <?php
-session_start();
-include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-db-connection.php");
-include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-functions.php");
+	session_start();
+	include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-db-connection.php");
+	include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-functions.php");
+?>
+
+<?php
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		
         if (isset($_POST['form_type']) && $_POST['form_type'] === 'login') {
             $email = $_POST['email'];
             $password = $_POST['password'];
@@ -23,48 +27,55 @@ try {
         } elseif (isset($_POST['form_type']) && $_POST['form_type'] === 'register') {
             $name = $_POST['name'];
             $email = $_POST['email'];
-            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $password = $_POST['password'];
+            $password_confirm = $_POST['password_confirm'];
             $company = $_POST['company'];
             $phone = $_POST['phone'];
             $address = $_POST['address'];
             $job_title = $_POST['job_title'];
 
-            $db = DB::getInstance();
-            $user = $db->selectOneByField('users', 'email', $email);
-
-            if ($user) {
-                $registerError = "Email already registered.";
+            if ($password !== $password_confirm) {
+                $registerError = "Passwords do not match.";
             } else {
-                // Check if this is the first user
-                $totalUsers = $db->selectValue("SELECT COUNT(*) FROM users");
-                $role = ($totalUsers == 0) ? 'admin' : 'user';
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $db = DB::getInstance();
+                $user = $db->selectOneByField('users', 'email', $email);
 
-                $userId = $db->insert('users', [
-                    'name' => $name,
-                    'email' => $email,
-                    'password' => $password,
-                    'role' => $role,
-                    'company' => $company,
-                    'phone' => $phone,
-                    'address' => $address,
-                    'job_title' => $job_title
-                ]);
+                if ($user) {
+                    $registerError = "Email already registered.";
+                } else {
+                    // Check if this is the first user
+                    $totalUsers = $db->selectValue("SELECT COUNT(*) FROM users");
+                    $role = ($totalUsers == 0) ? 'admin' : 'user';
 
-                // Assign free basic plan
-                $db->insert('subscriptions', [
-                    'user_id' => $userId,
-                    'plan_id' => 'Basic', // Using ENUM value
-                    'start_date' => date('Y-m-d'),
-                    'end_date' => date('Y-m-d', strtotime('+1 month')),
-                    'status' => 'active'
-                ]);
+                    $userId = $db->insert('users', [
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => $hashed_password,
+                        'role' => $role,
+                        'company' => $company,
+                        'phone' => $phone,
+                        'address' => $address,
+                        'job_title' => $job_title
+                    ]);
 
-                $_SESSION['user_id'] = $userId;
-                $_SESSION['user_name'] = $name;
-                header('Location: app/index.php');
-                exit;
+                    // Assign free basic plan
+                    $db->insert('subscriptions', [
+                        'user_id' => $userId,
+                        'plan_id' => 'Basic', // Using ENUM value
+                        'start_date' => date('Y-m-d'),
+                        'end_date' => date('Y-m-d', strtotime('+1 month')),
+                        'status' => 'active'
+                    ]);
+
+                    $_SESSION['user_id'] = $userId;
+                    $_SESSION['user_name'] = $name;
+                    header('Location: app/index.php');
+                    exit;
+                }
             }
         }
+		
     }
 } catch (Exception $e) {
     error_log($e->getMessage());
@@ -73,7 +84,7 @@ try {
 ?>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-header.php");
+    include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-header.php");
 ?>
 
 <main class="container my-5">
@@ -113,7 +124,7 @@ include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-header.php");
                         <?php if (isset($registerError)): ?>
                             <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($registerError) ?></div>
                         <?php endif; ?>
-                        <?php if (isset($error)): ?>
+                        <?php if (isset($error) && !isset($loginError)): ?>
                             <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div>
                         <?php endif; ?>
                         <form action="login.php" method="post">
@@ -128,23 +139,27 @@ include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-header.php");
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Company</label>
-                                <input type="text" name="company" class="form-control" id="company" placeholder="Company">
+                                <input type="text" name="company" class="form-control" id="company" placeholder="Company" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="text" name="phone" class="form-control" id="phone" placeholder="Phone">
+                                <input type="text" name="phone" class="form-control" id="phone" placeholder="Phone" required>
                             </div>
                             <div class="mb-3">
                                 <label for="address" class="form-label">Address</label>
-                                <textarea name="address" class="form-control" id="address" placeholder="Address"></textarea>
+                                <textarea name="address" class="form-control" id="address" placeholder="Address" required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="job_title" class="form-label">Job Title</label>
-                                <input type="text" name="job_title" class="form-control" id="job_title" placeholder="Job Title">
+                                <input type="text" name="job_title" class="form-control" id="job_title" placeholder="Job Title" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password_confirm" class="form-label">Confirm Password</label>
+                                <input type="password" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirm Password" required>
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-success btn-block"><i class="fas fa-user-plus"></i> Register</button>
@@ -158,5 +173,5 @@ include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-header.php");
 </main>
 
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-footer.php");
+    include($_SERVER['DOCUMENT_ROOT'] . "/includes/inc-footer.php");
 ?>

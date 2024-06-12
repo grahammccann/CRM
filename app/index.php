@@ -51,30 +51,15 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-secondary text-white">
-                        <h4>Quick Links</h4>
+                        <h4>User Actions</h4>
                     </div>
                     <div class="card-body">
-                        <ul>
-                            <li><a href="profile.php">Manage your profile</a></li>
-                            <li><a href="contacts.php">Manage your contacts</a></li>
-                            <li><a href="sales.php">Manage your sales</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php else: ?>
-        <div class="row mt-3">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p>You currently do not have an active subscription. Please visit our <a href="https://www.syncfas.com/pricing.php">pricing page</a> to select a plan that suits your needs.</p>
+                        <!-- User actions content -->
                     </div>
                 </div>
             </div>
         </div>
     <?php endif; ?>
-
 </div>
 
 <?php

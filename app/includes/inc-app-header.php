@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: /login.php');
@@ -13,6 +15,8 @@ $user_id = $_SESSION['user_id'];
 $user_info = DB::getInstance()->selectOne("SELECT name, email, company_name, phone, address, job_title, created_at, role FROM users WHERE id = :user_id", ['user_id' => $user_id]);
 $avatar_info = DB::getInstance()->selectOne("SELECT avatar_path FROM user_avatars WHERE user_id = :user_id", ['user_id' => $user_id]);
 $avatar_path = $avatar_info ? '/app/avatar/' . $avatar_info['avatar_path'] : '/app/avatar/avatar-standard-male.png';
+
+$_SESSION['user_role'] = $user_info['role'];  // Set user role in session
 
 $current_page = basename($_SERVER['PHP_SELF'], ".php");
 $page_titles = [
@@ -37,11 +41,8 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/styles/overlayscrollbars.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= fullUrl(); ?>app/css/adminlte.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/browser/overlayscrollbars.browser.es6.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
-    <script src="<?= fullUrl(); ?>app/js/adminlte.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"></script>
+    <link rel="stylesheet" href="<?= fullUrl(); ?>app/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
@@ -84,9 +85,8 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
         </nav>
         <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
             <div class="sidebar-brand">
-                <a href="<?= fullUrl(); ?>" class="brand-link">
-                    <i class="fas fa-chart-line" style="margin-right: 10px; color: #26A69A;"></i>
-                    <span class="brand-text fw-light">SyncFàs CRM</span>
+                <a class="navbar-brand site-logo" href="<?= fullUrl(); ?>">
+                    <i class="fas fa-users site-logo-icon"></i> SyncFàs CRM
                 </a>
             </div>
             <div class="sidebar-wrapper">
@@ -98,7 +98,7 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                                 <p>Dashboard</p>
                             </a>
                         </li>
-						<li class="nav-header">CRM</li>
+                        <li class="nav-header">CRM</li>
                         <li class="nav-item">
                             <a href="customers.php" class="nav-link <?php echo $current_page === 'customers' ? 'active' : ''; ?>">
                                 <i class="nav-icon bi bi-person-lines-fill"></i>
@@ -111,7 +111,8 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                                 <p>Sales</p>
                             </a>
                         </li>
-					</ul>
+                        <!-- Additional nav items here -->
+                    </ul>
                 </nav>
             </div>
         </aside>
