@@ -70,14 +70,14 @@ ob_end_flush();
         <div class="container-fluid">
             <!-- Display success or error messages -->
             <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success">
+            <div class="alert alert-success" data-bs-toggle="tooltip" title="Success message">
                 <i class="bi bi-check-circle"></i> <?= htmlspecialchars($_SESSION['success']) ?>
                 <?php unset($_SESSION['success']); ?>
             </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" data-bs-toggle="tooltip" title="Error message">
                 <i class="bi bi-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error']) ?>
                 <?php unset($_SESSION['error']); ?>
             </div>
@@ -105,14 +105,14 @@ ob_end_flush();
                         <tbody>
                             <?php foreach ($users as $user): ?>
                             <tr>
-                                <td><?= htmlspecialchars($user['id']); ?></td>
-                                <td><?= htmlspecialchars($user['name']); ?></td>
-                                <td><a href="mailto:<?= htmlspecialchars($user['email']); ?>" style="text-decoration: none;"><?= htmlspecialchars($user['email']); ?></a></td>
-                                <td><?= htmlspecialchars($user['company_name']); ?></td>
-                                <td><?= htmlspecialchars($user['phone']); ?></td>
-                                <td><?= htmlspecialchars($user['job_title']); ?></td>
-                                <td><?= htmlspecialchars($user['address']); ?></td>
-                                <td><?= htmlspecialchars($user['role']); ?></td>
+                                <td data-bs-toggle="tooltip" title="User ID"><?= htmlspecialchars($user['id']); ?></td>
+                                <td data-bs-toggle="tooltip" title="User Name"><?= htmlspecialchars($user['name']); ?></td>
+                                <td><a href="mailto:<?= htmlspecialchars($user['email']); ?>" style="text-decoration: none;" data-bs-toggle="tooltip" title="User Email"><?= htmlspecialchars($user['email']); ?></a></td>
+                                <td data-bs-toggle="tooltip" title="Company Name"><?= htmlspecialchars($user['company_name']); ?></td>
+                                <td data-bs-toggle="tooltip" title="Phone Number"><?= htmlspecialchars($user['phone']); ?></td>
+                                <td data-bs-toggle="tooltip" title="Job Title"><?= htmlspecialchars($user['job_title']); ?></td>
+                                <td data-bs-toggle="tooltip" title="Address"><?= htmlspecialchars($user['address']); ?></td>
+                                <td data-bs-toggle="tooltip" title="Role"><?= htmlspecialchars($user['role']); ?></td>
                                 <td>
                                     <button onclick="editUser(<?= $user['id']; ?>)" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Edit User"><i class="bi bi-pencil"></i></button>
                                     <form action="admin-users.php" method="post" style="display:inline-block;">
@@ -144,31 +144,31 @@ ob_end_flush();
                     <input type="hidden" name="action" id="userAction" value="edit">
                     <input type="hidden" name="user_id" id="userId">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label" data-bs-toggle="tooltip" title="Enter the user's name">Name</label>
                         <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label" data-bs-toggle="tooltip" title="Enter the user's email address">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="company_name" class="form-label">Company</label>
+                        <label for="company_name" class="form-label" data-bs-toggle="tooltip" title="Enter the company name">Company</label>
                         <input type="text" class="form-control" id="company_name" name="company_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
+                        <label for="phone" class="form-label" data-bs-toggle="tooltip" title="Enter the phone number">Phone</label>
                         <input type="text" class="form-control" id="phone" name="phone" required>
                     </div>
                     <div class="mb-3">
-                        <label for="job_title" class="form-label">Job Title</label>
+                        <label for="job_title" class="form-label" data-bs-toggle="tooltip" title="Enter the job title">Job Title</label>
                         <input type="text" class="form-control" id="job_title" name="job_title" required>
                     </div>
                     <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
+                        <label for="address" class="form-label" data-bs-toggle="tooltip" title="Enter the address">Address</label>
                         <input type="text" class="form-control" id="address" name="address" required>
                     </div>
                     <div class="mb-3">
-                        <label for="role" class="form-label">Role</label>
+                        <label for="role" class="form-label" data-bs-toggle="tooltip" title="Select the user's role">Role</label>
                         <select class="form-control" id="role" name="role" required>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
@@ -177,7 +177,7 @@ ob_end_flush();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Save the user details">Save Changes</button>
                 </div>
             </form>
         </div>

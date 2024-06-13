@@ -1,6 +1,9 @@
 <?php
     ob_start();
     include($_SERVER['DOCUMENT_ROOT'] . "/app/includes/inc-app-header.php");
+?>
+
+<?php
 
     // Fetch customers for the logged-in user
     $user_id = $_SESSION['user_id'];
@@ -13,6 +16,7 @@
 ?>
 
 <?php
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $id = $_POST['id'] ?? 0;
@@ -63,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
 ?>
 
 <div class="content-wrapper">
@@ -70,14 +75,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container-fluid">
             <!-- Display success or error messages -->
             <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success">
+            <div class="alert alert-success" data-bs-toggle="tooltip" title="Success message">
                 <i class="bi bi-check-circle"></i> <?= htmlspecialchars($_SESSION['success']) ?>
                 <?php unset($_SESSION['success']); ?>
             </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" data-bs-toggle="tooltip" title="Error message">
                 <i class="bi bi-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error']) ?>
                 <?php unset($_SESSION['error']); ?>
             </div>
@@ -88,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="card mt-3">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h3>Customers</h3>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditCustomerModal" style="position: absolute; right: 20px;"><i class="bi bi-person-plus"></i> Add Customer</button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditCustomerModal" data-bs-toggle="tooltip" title="Click to add a new customer" style="position: absolute; right: 20px;"><i class="bi bi-person-plus"></i> Add Customer</button>
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered table-hover">
@@ -108,20 +113,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <tbody>
                                     <?php foreach ($customers as $customer): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($customer['id']); ?></td>
-                                        <td><?= htmlspecialchars($customer['company_name']); ?></td>
-                                        <td><?= htmlspecialchars($customer['primary_contact']); ?></td>
-                                        <td><a href="mailto:<?= htmlspecialchars($customer['primary_email']); ?>" style="text-decoration: none;"><?= htmlspecialchars($customer['primary_email']); ?></a></td>
-                                        <td><?= htmlspecialchars($customer['phone']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Customer ID"><?= htmlspecialchars($customer['id']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Company name"><?= htmlspecialchars($customer['company_name']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Primary contact"><?= htmlspecialchars($customer['primary_contact']); ?></td>
+                                        <td><a href="mailto:<?= htmlspecialchars($customer['primary_email']); ?>" style="text-decoration: none;" data-bs-toggle="tooltip" title="Send email to <?= htmlspecialchars($customer['primary_email']); ?>"><?= htmlspecialchars($customer['primary_email']); ?></a></td>
+                                        <td data-bs-toggle="tooltip" title="Phone number"><?= htmlspecialchars($customer['phone']); ?></td>
                                         <td>
                                             <?php if ($customer['active']): ?>
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success" data-bs-toggle="tooltip" title="Active customer">Active</span>
                                             <?php else: ?>
-                                            <span class="badge bg-danger">Inactive</span>
+                                            <span class="badge bg-danger" data-bs-toggle="tooltip" title="Inactive customer">Inactive</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?= htmlspecialchars($customer['groups']); ?></td>
-                                        <td><?= htmlspecialchars($customer['date_created']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Groups"><?= htmlspecialchars($customer['groups']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Date created"><?= htmlspecialchars($customer['date_created']); ?></td>
                                         <td>
                                             <button onclick="editCustomer(<?= $customer['id']; ?>)" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Edit Customer"><i class="bi bi-pencil"></i> Edit</button>
                                             <form action="customers.php" method="post" style="display:inline-block;">
@@ -155,33 +160,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="action" id="customerAction" value="add">
                     <input type="hidden" name="id" id="customerId">
                     <div class="mb-3">
-                        <label for="company_name" class="form-label">Company</label>
+                        <label for="company_name" class="form-label" data-bs-toggle="tooltip" title="Enter the company name">Company</label>
                         <input type="text" class="form-control" id="company_name" name="company_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="primary_contact" class="form-label">Primary Contact</label>
+                        <label for="primary_contact" class="form-label" data-bs-toggle="tooltip" title="Enter the primary contact">Primary Contact</label>
                         <input type="text" class="form-control" id="primary_contact" name="primary_contact" required>
                     </div>
                     <div class="mb-3">
-                        <label for="primary_email" class="form-label">Primary Email</label>
+                        <label for="primary_email" class="form-label" data-bs-toggle="tooltip" title="Enter the primary email">Primary Email</label>
                         <input type="email" class="form-control" id="primary_email" name="primary_email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
+                        <label for="phone" class="form-label" data-bs-toggle="tooltip" title="Enter the phone number">Phone</label>
                         <input type="text" class="form-control" id="phone" name="phone">
                     </div>
                     <div class="mb-3">
-                        <label for="groups" class="form-label">Groups</label>
+                        <label for="groups" class="form-label" data-bs-toggle="tooltip" title="Enter the groups">Groups</label>
                         <input type="text" class="form-control" id="groups" name="groups">
                     </div>
                     <div class="mb-3">
-                        <label for="active" class="form-label">Active</label>
+                        <label for="active" class="form-label" data-bs-toggle="tooltip" title="Is the customer active?">Active</label>
                         <input type="checkbox" id="active" name="active" checked>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Customer</button>
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Save the customer details">Save Customer</button>
                 </div>
             </form>
         </div>

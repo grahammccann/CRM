@@ -28,19 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: sales.php');
         exit;
     } elseif ($action === 'add' || $action === 'edit') {
-        $deal_name = trim($_POST['deal_name']);
+        $sale_name = trim($_POST['sale_name']);
         $contact_id = trim($_POST['contact_id']);
-        $deal_value = trim($_POST['deal_value']);
-        $deal_stage = trim($_POST['deal_stage']);
+        $sale_value = trim($_POST['sale_value']);
+        $sale_stage = trim($_POST['sale_stage']);
         $close_date = trim($_POST['close_date']);
         $notes = trim($_POST['notes']);
 
         $fields = [
             'user_id' => $user_id,
-            'deal_name' => $deal_name,
+            'sale_name' => $sale_name,
             'contact_id' => $contact_id,
-            'deal_value' => $deal_value,
-            'deal_stage' => $deal_stage,
+            'sale_value' => $sale_value,
+            'sale_stage' => $sale_stage,
             'close_date' => $close_date,
             'notes' => $notes,
         ];
@@ -71,14 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container-fluid">
             <!-- Display success or error messages -->
             <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success">
+            <div class="alert alert-success" data-bs-toggle="tooltip" title="Success message">
                 <i class="bi bi-check-circle"></i> <?= htmlspecialchars($_SESSION['success']) ?>
                 <?php unset($_SESSION['success']); ?>
             </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" data-bs-toggle="tooltip" title="Error message">
                 <i class="bi bi-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['error']) ?>
                 <?php unset($_SESSION['error']); ?>
             </div>
@@ -89,13 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="card mt-3">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h3>Sales</h3>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal" style="position: absolute; right: 20px;"><i class="bi bi-plus-lg"></i> Add Sale</button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEditSaleModal" data-bs-toggle="tooltip" title="Click to add a new sale" style="position: absolute; right: 20px;"><i class="bi bi-plus-lg"></i> Add Sale</button>
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Deal Name</th>
+                                        <th>#</th>
+                                        <th>Sale Name</th>
                                         <th>Contact</th>
                                         <th>Value</th>
                                         <th>Stage</th>
@@ -106,11 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <tbody>
                                     <?php foreach ($sales as $sale): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($sale['deal_name']); ?></td>
-                                        <td><?= htmlspecialchars($sale['contact_id']); ?></td>
-                                        <td><?= htmlspecialchars($sale['deal_value']); ?></td>
-                                        <td><?= htmlspecialchars($sale['deal_stage']); ?></td>
-                                        <td><?= htmlspecialchars($sale['close_date']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Sale ID"><?= htmlspecialchars($sale['id']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Sale name"><?= htmlspecialchars($sale['sale_name']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Contact ID"><?= htmlspecialchars($sale['contact_id']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Sale value"><?= htmlspecialchars($sale['sale_value']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Sale stage"><?= htmlspecialchars($sale['sale_stage']); ?></td>
+                                        <td data-bs-toggle="tooltip" title="Close date"><?= htmlspecialchars($sale['close_date']); ?></td>
                                         <td>
                                             <button onclick="editSale(<?= $sale['id']; ?>)" class="btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Edit Sale"><i class="bi bi-pencil"></i> Edit</button>
                                             <form action="sales.php" method="post" style="display:inline-block;">
@@ -144,37 +146,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="action" id="saleAction" value="add">
                     <input type="hidden" name="id" id="saleId">
                     <div class="mb-3">
-                        <label for="deal_name" class="form-label">Deal Name</label>
-                        <input type="text" class="form-control" id="deal_name" name="deal_name" required>
+                        <label for="sale_name" class="form-label" data-bs-toggle="tooltip" title="Enter the sale name">Sale Name</label>
+                        <input type="text" class="form-control" id="sale_name" name="sale_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="contact_id" class="form-label">Contact</label>
+                        <label for="contact_id" class="form-label" data-bs-toggle="tooltip" title="Select a contact">Contact</label>
                         <select class="form-control" id="contact_id" name="contact_id" required>
                             <?php foreach ($contacts as $contact): ?>
-                                <option value="<?= $contact['id']; ?>"><?= $contact['name']; ?></option>
+                                <option value="<?= $contact['id']; ?>"><?= htmlspecialchars($contact['name']); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="deal_value" class="form-label">Deal Value</label>
-                        <input type="number" class="form-control" id="deal_value" name="deal_value" required>
+                        <label for="sale_value" class="form-label" data-bs-toggle="tooltip" title="Enter the sale value">Sale Value</label>
+                        <input type="number" class="form-control" id="sale_value" name="sale_value" required>
                     </div>
                     <div class="mb-3">
-                        <label for="deal_stage" class="form-label">Deal Stage</label>
-                        <input type="text" class="form-control" id="deal_stage" name="deal_stage" required>
+                        <label for="sale_stage" class="form-label" data-bs-toggle="tooltip" title="Enter the sale stage">Sale Stage</label>
+                        <input type="text" class="form-control" id="sale_stage" name="sale_stage" required>
                     </div>
                     <div class="mb-3">
-                        <label for="close_date" class="form-label">Close Date</label>
+                        <label for="close_date" class="form-label" data-bs-toggle="tooltip" title="Enter the close date">Close Date</label>
                         <input type="date" class="form-control" id="close_date" name="close_date" required>
                     </div>
                     <div class="mb-3">
-                        <label for="notes" class="form-label">Notes</label>
+                        <label for="notes" class="form-label" data-bs-toggle="tooltip" title="Enter any notes">Notes</label>
                         <textarea class="form-control" id="notes" name="notes"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Sale</button>
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Save the sale details">Save Sale</button>
                 </div>
             </form>
         </div>
@@ -183,14 +185,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
 function editSale(id) {
-    const sale = <?= json_encode($sales); ?>.find(sale => sale.id == id);
+    const sales = <?= json_encode($sales); ?>;
+    const sale = sales.find(sale => sale.id == id);
     if (sale) {
         document.getElementById('saleAction').value = 'edit';
         document.getElementById('saleId').value = sale.id;
-        document.getElementById('deal_name').value = sale.deal_name;
+        document.getElementById('sale_name').value = sale.sale_name;
         document.getElementById('contact_id').value = sale.contact_id;
-        document.getElementById('deal_value').value = sale.deal_value;
-        document.getElementById('deal_stage').value = sale.deal_stage;
+        document.getElementById('sale_value').value = sale.sale_value;
+        document.getElementById('sale_stage').value = sale.sale_stage;
         document.getElementById('close_date').value = sale.close_date;
         document.getElementById('notes').value = sale.notes;
         document.getElementById('addEditSaleModalLabel').innerText = 'Edit Sale';

@@ -26,7 +26,11 @@ $page_titles = [
     'sales' => 'Sales',
     'admin-users' => 'Manage Users',
     'admin-settings' => 'Settings',
-    'admin-reports' => 'Reports',
+    'contacts' => 'Contacts',
+    'leads' => 'Leads',
+    'tasks' => 'Tasks',
+    'reports' => 'Reports',
+    'emails' => 'Emails'
 ];
 
 $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] : 'Page';
@@ -43,6 +47,16 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
     <link rel="stylesheet" href="<?= fullUrl(); ?>app/css/adminlte.min.css">
     <link rel="stylesheet" href="<?= fullUrl(); ?>app/css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .admin-panel-link {
+            color: #ffcc00 !important; /* Bright yellow color */
+            font-weight: bold !important;
+        }
+
+        .admin-panel-link i {
+            color: #ffcc00 !important; /* Bright yellow color for icons */
+        }
+    </style>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
@@ -53,16 +67,6 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                     <li class="nav-item d-none d-md-block"><a href="index.php" class="nav-link">Home</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
-                    <?php if (isset($user_info['role']) && $user_info['role'] === 'admin'): ?>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Admin Panel
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="admin-users.php">Manage Users</a></li>
-                            </ul>
-                        </li>
-                    <?php endif; ?>
                     <li class="nav-item"><a class="nav-link" href="#" data-lte-toggle="fullscreen"><i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i><i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none;"></i></a></li>
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -92,13 +96,23 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
             <div class="sidebar-wrapper">
                 <nav class="mt-2">
                     <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                        <?php if (isset($user_info['role']) && $user_info['role'] === 'admin'): ?>
+                            <li class="nav-header admin-panel-link">Admin Panel</li>
+                            <li class="nav-item">
+                                <a href="admin-users.php" class="nav-link admin-panel-link">
+                                    <i class="fas fa-users-cog"></i>
+                                    <p>Manage Users</p>
+                                </a>
+                            </li>
+                            <!-- Add more admin links here if needed -->
+                        <?php endif; ?>
+                        <li class="nav-header">CRM</li>
                         <li class="nav-item">
                             <a href="index.php" class="nav-link <?php echo $current_page === 'index' ? 'active' : ''; ?>">
                                 <i class="nav-icon bi bi-speedometer"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
-                        <li class="nav-header">CRM</li>
                         <li class="nav-item">
                             <a href="customers.php" class="nav-link <?php echo $current_page === 'customers' ? 'active' : ''; ?>">
                                 <i class="nav-icon bi bi-person-lines-fill"></i>
@@ -109,6 +123,36 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
                             <a href="sales.php" class="nav-link <?php echo $current_page === 'sales' ? 'active' : ''; ?>">
                                 <i class="nav-icon bi bi-bar-chart-line"></i>
                                 <p>Sales</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="contacts.php" class="nav-link <?php echo $current_page === 'contacts' ? 'active' : ''; ?>">
+                                <i class="nav-icon bi bi-person-bounding-box"></i>
+                                <p>Contacts</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="leads.php" class="nav-link <?php echo $current_page === 'leads' ? 'active' : ''; ?>">
+                                <i class="nav-icon bi bi-person-plus"></i>
+                                <p>Leads</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="tasks.php" class="nav-link <?php echo $current_page === 'tasks' ? 'active' : ''; ?>">
+                                <i class="nav-icon bi bi-check-square"></i>
+                                <p>Tasks</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="emails.php" class="nav-link <?php echo $current_page === 'emails' ? 'active' : ''; ?>">
+                                <i class="nav-icon bi bi-envelope"></i>
+                                <p>Emails</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="reports.php" class="nav-link <?php echo $current_page === 'reports' ? 'active' : ''; ?>">
+                                <i class="nav-icon bi bi-file-earmark-text"></i>
+                                <p>Reports</p>
                             </a>
                         </li>
                         <!-- Additional nav items here -->
